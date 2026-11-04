@@ -1,0 +1,109 @@
+:root {
+  font-family:system-ui,'Meiryo',sans-serif;
+  color-scheme:dark;
+}
+
+body {
+  background:#111827;
+  color:#f3f4f6;
+  max-width:1050px;
+  margin:auto;
+  padding:26px;
+}
+
+h1 {
+  font-size:1.7rem;
+}
+
+section {
+  background:#1f2937;
+  padding:20px;
+  margin:18px 0;
+  border-radius:14px;
+}
+
+label {
+  display:block;
+  margin:10px 0 5px;
+}
+
+input,button {
+  font:inherit;
+  border-radius:7px;
+  padding:9px;
+  background:#111827;
+  color:white;
+  border:1px solid #6b7280;
+}
+
+input[type=text],input[type=password] {
+  width:min(100%,560px);
+  box-sizing:border-box;
+}
+
+button {
+  background:#5b21b6;
+  border:0;
+  cursor:pointer;
+  margin:8px 6px 8px 0;
+}
+
+button:disabled {
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+small,.muted {
+  color:#cbd5e1;
+}
+
+table {
+  border-collapse:collapse;
+  width:100%;
+  font-size:.88rem;
+}
+
+td,th {
+  border-bottom:1px solid #475569;
+  text-align:left;
+  padding:9px;
+  vertical-align:top;
+  word-break:break-word;
+}
+
+.scroll {
+  overflow:auto;
+  max-height:380px;
+}
+
+.error {
+  color:#fca5a5;
+}
+
+.ok {
+  color:#86efac;
+}
+
+pre {
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+a {
+  color:#c4b5fd;
+}
+
+a.button {
+  display: inline-block;
+  background: #5b21b6;
+  color: white;
+  padding: 9px;
+  border-radius: 7px;
+  margin: 8px 6px 8px 0;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 3px solid #c4b5fd;
+  outline-offset: 3px;
+}

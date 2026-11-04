@@ -1,0 +1,5 @@
+﻿type,text,notes,priority,date,frequency,everyX,mon,tue,wed,thu,fri,sat,sun,up,down,value
+todo,買い物リストを作る,必要な日用品を確認する,1.5,2026-11-15,,,,,,,,,,,,
+daily,朝のストレッチ,5分間体を動かす,1,,weekly,1,1,1,1,1,1,0,0,,,
+habit,読書をする,10分読んだらプラス,1,,,,,,,,,,,true,false,
+reward,好きな音楽を聴く,15分間楽しむ,1,,,,,,,,,,,,,10
