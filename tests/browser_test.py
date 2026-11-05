@@ -48,7 +48,12 @@ with sync_playwright() as playwright:
 
     # 案内は初期状態では非表示。リンクの操作・閉じる・Escape・フォーカス復帰。
     assert not page.locator('#auth-help-dialog').is_visible()
-    page.locator('#auth-help-open').click()
+    help_icon = page.get_by_role('button', name='User ID・API Tokenの調べ方', exact=True)
+    assert help_icon.locator('svg[aria-hidden="true"]').count() == 1
+    assert help_icon.get_attribute('title') == 'User ID・API Tokenの調べ方'
+    bounds = help_icon.bounding_box()
+    assert bounds['width'] >= 44 and bounds['height'] >= 44
+    help_icon.click()
     assert page.locator('#auth-help-dialog').is_visible()
     assert page.locator('#auth-help-dialog a').get_attribute('href') == 'https://habitica.com/user/settings/api'
     assert 'User ID' in page.locator('#auth-help-dialog').inner_text()

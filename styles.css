@@ -122,10 +122,19 @@ dialog::backdrop { background: rgb(0 0 0 / 65%); }
 dialog input, dialog textarea { width: 100%; box-sizing: border-box; }
 textarea { font: inherit; background: #111827; color: white; border: 1px solid #6b7280; border-radius: 7px; padding: 9px; min-height: 90px; }
 
-button.text-link {
+/* 説明を開く案内アイコン。タッチでも押しやすい範囲を確保する。 */
+.section-heading { display: flex; align-items: center; gap: 8px; }
+.help-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  margin: 0;
   background: transparent;
   color: #c4b5fd;
-  text-decoration: underline;
-  padding: 0;
-  text-align: left;
+  border-radius: 50%;
 }
+.help-icon:hover { background: #374151; }
