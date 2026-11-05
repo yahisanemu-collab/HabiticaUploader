@@ -38,16 +38,19 @@
 </section>
 <section>
 <h2>2. Habitica認証</h2>
-<p>
-<small>Habiticaの設定 → APIでUser IDとAPI Tokenを確認してください。API Tokenはパスワードと同様に扱ってください。</small>
-</p>
+<p>利用するご本人のHabiticaアカウントの情報を入力してください。</p>
+<ol id="auth-help">
+<li>ブラウザでHabiticaにログインします。</li>
+<li>Habiticaの「設定」→「API」を開きます。<a href="https://habitica.com/user/settings/api" target="_blank" rel="noopener noreferrer">API設定を別タブで開く</a></li>
+<li>「User ID（ユーザーID）」をコピーし、下の「User ID」に貼り付けます。</li>
+<li>「API Token（APIトークン）」を確認・コピーし、下の「API Token」に貼り付けます。非表示の場合は表示ボタンを押してください。</li>
+<li>「接続テスト」を押し、接続成功と表示されることを確認します。</li>
+</ol>
+<p><small>入力するのはログイン用のメールアドレスやパスワードではありません。API Tokenはパスワードと同様に扱い、他人に送ったり公開したりしないでください。</small></p>
 <label for="uid">User ID</label>
-<input id="uid" type="text" autocomplete="off" spellcheck="false">
+<input id="uid" aria-describedby="auth-help" type="text" autocomplete="off" spellcheck="false">
 <label for="token">API Token</label>
-<input id="token" type="password" autocomplete="off" spellcheck="false">
-<p>
-<small>X-Clientには入力されたUser IDをツール識別子として使用します。自分専用ツールとして利用してください。</small>
-</p>
+<input id="token" aria-describedby="auth-help" type="password" autocomplete="off" spellcheck="false">
 <button id="test">接続テスト</button>
 <span id="connection" role="status">
 </span>
