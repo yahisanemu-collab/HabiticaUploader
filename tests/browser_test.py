@@ -88,6 +88,35 @@ with sync_playwright() as playwright:
     assert 'CSV内重複' in page.locator('#results').inner_text()
     assert '既存' in page.locator('#results').inner_text()
 
+    # 編集の検証エラー・取消・保存、および削除後の送信内容を確認。
+    load('type,text,everyX\ndaily,before,0\ntodo,remove-me,')
+    page.get_by_role('button', name='2行目を編集', exact=True).click()
+    page.locator('#edit-everyx').fill('0')
+    page.get_by_role('button', name='保存', exact=True).click()
+    assert 'everyX' in page.locator('#edit-error').inner_text()
+    assert page.locator('#editor').is_visible()
+    page.locator('#edit-text').fill('discarded')
+    page.locator('#edit-cancel').click()
+    page.wait_for_function("!document.querySelector('#editor').open")
+    assert 'before' in page.locator('#preview').inner_text()
+    assert 'discarded' not in page.locator('#preview').inner_text()
+    assert page.locator('#upload').is_disabled()
+    page.get_by_role('button', name='2行目を編集', exact=True).click()
+    page.locator('#edit-everyx').fill('2')
+    page.locator('#edit-text').fill('edited')
+    page.locator('#edit-notes').fill('<img src=x onerror=alert(1)>')
+    page.get_by_role('button', name='保存', exact=True).click()
+    page.wait_for_function("!document.querySelector('#editor').open")
+    assert page.locator('#preview img').count() == 0
+    assert page.locator('#upload').is_enabled()
+    page.get_by_role('button', name='3行目を削除', exact=True).click()
+    assert page.locator('#preview tr').count() == 1
+    page.locator('#upload').click()
+    page.wait_for_function("document.querySelector('#status').textContent.includes('APIが成功')")
+    posted = [json.loads(body) for method, _, body in requests if method == 'POST'][-1]
+    assert posted == [{'type': 'daily', 'text': 'edited', 'notes': '<img src=x onerror=alert(1)>', 'everyX': 2}]
+    assert 'remove-me' not in json.dumps(posted)
+
     mode['value'] = 'invalid'
     post_count = len([request for request in requests if request[0] == 'POST'])
     page.locator('#upload').click()
@@ -103,10 +132,21 @@ with sync_playwright() as playwright:
     assert page.locator('#upload').is_enabled()
     # 確認画面でのキャンセル後に送信しないことを確認。
     page.remove_listener('dialog', accept_dialog)
-    page.on('dialog', lambda dialog: dialog.dismiss())
+    dismiss_dialog = lambda dialog: dialog.dismiss()
+    page.on('dialog', dismiss_dialog)
     post_count = len([request for request in requests if request[0] == 'POST'])
     page.locator('#upload').click()
     assert len([request for request in requests if request[0] == 'POST']) == post_count
+    # 最後の行の削除で登録不可になり、古い件数を残さない。
+    page.remove_listener('dialog', dismiss_dialog)
+    page.on('dialog', accept_dialog)
+    page.get_by_role('button', name='2行目を削除', exact=True).click()
+    assert page.locator('#preview tr').count() == 0
+    assert page.locator('#upload').is_disabled()
+    assert page.locator('#summary').inner_text() == '登録対象はありません。'
+    assert '公式資料' not in page.locator('body').inner_text()
+    assert 'CSVを確認してからHabiticaへ一括登録します。' not in page.locator('body').inner_text()
+    assert page.locator('a[href="https://habitica.com/apidoc/"]').count() == 0
     assert not errors, errors
     browser.close()
     server.shutdown()

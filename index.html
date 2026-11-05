@@ -8,7 +8,6 @@
 </head>
 <body>
 <h1>Habitica CSVアップローダー</h1>
-<p class="muted">CSVを確認してからHabiticaへ一括登録します。追加インストール不要・APIキーは保存しません。正式版 V1-1。</p>
 <section>
 <h2>1. CSVを読み込む</h2>
 <label for="file">UTF-8 CSVファイル</label>
@@ -17,6 +16,7 @@
 <p>
 <small>必須列：<code>type,text</code>　任意列：<code>notes,priority,date,frequency,everyX,mon,tue,wed,thu,fri,sat,sun,up,down,value</code>。UTF-8推奨。typeはtodo / daily / habit / reward。日付は YYYY-MM-DD。曜日列は true/false または 1/0。</small>
 </p>
+<p><small>読み込み後は各行の「編集」で内容を変更し、「削除」で登録対象から外せます。元のCSVファイルは変更しません。</small></p>
 <p id="summary" role="status">
 </p>
 <div class="scroll">
@@ -28,6 +28,7 @@
 <th>タイトル</th>
 <th>詳細</th>
 <th>状態</th>
+<th>操作</th>
 </tr>
 </thead>
 <tbody id="preview">
@@ -67,8 +68,15 @@
 <pre id="results">
 </pre>
 </section>
-<p class="muted">公式資料：<a href="https://habitica.com/apidoc/" target="_blank" rel="noopener noreferrer">Habitica API</a> ・ <a href="https://github.com/HabitRPG/habitica/wiki/API-Usage-Guidelines" target="_blank" rel="noopener noreferrer">API利用ガイド</a>
-</p>
+<dialog id="editor" aria-labelledby="editor-title">
+<form id="edit-form">
+<h2 id="editor-title">登録内容を編集</h2>
+<div id="edit-fields"></div>
+<p id="edit-error" class="error" role="alert"></p>
+<button type="submit">保存</button>
+<button type="button" id="edit-cancel">キャンセル</button>
+</form>
+</dialog>
 <script src="csv.js" defer>
 </script>
 <script src="app.js" defer>

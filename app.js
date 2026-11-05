@@ -5,6 +5,17 @@ let rows = [];
 let busy = false;
 let cancel = false;
 let fileRevision = 0;
+let editingRow = null;
+const editableFields = [
+  ['type', '種類（todo / daily / habit / reward）'], ['text', 'タイトル'], ['notes', '詳細'],
+  ['priority', '難易度（0.1 / 1 / 1.5 / 2）'], ['date', '期限（ToDo・YYYY-MM-DD）'],
+  ['frequency', '繰り返し（日課・daily / weekly / monthly / yearly）'],
+  ['everyx', '繰り返し間隔 everyX（日課・1以上の整数）'],
+  ['mon', '月曜日'], ['tue', '火曜日'], ['wed', '水曜日'], ['thu', '木曜日'],
+  ['fri', '金曜日'], ['sat', '土曜日'], ['sun', '日曜日'],
+  ['up', 'プラスを有効にする（習慣）'], ['down', 'マイナスを有効にする（習慣）'],
+  ['value', '必要なゴールド（ごほうび）'],
+];
 
 function render() {
   $('preview').replaceChildren();
@@ -18,13 +29,86 @@ function render() {
       if (index === 4 && row.error) td.className = 'error';
       tr.append(td);
     });
+    const actions = document.createElement('td');
+    for (const [label, handler] of [['編集', () => openEditor(row)], ['削除', () => deleteRow(row)]]) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = label;
+      button.setAttribute('aria-label', `${row.line}行目を${label}`);
+      button.disabled = busy;
+      button.onclick = handler;
+      actions.append(button);
+    }
+    tr.append(actions);
     $('preview').append(tr);
   }
   const errors = rows.filter(row => row.error).length;
   if (rows.length) $('summary').textContent = `${rows.length}件読み込み・正常 ${rows.length - errors}件・エラー ${errors}件`;
-  $('upload').disabled = busy || !rows.length || errors > 0;
+  $('upload').disabled = busy || editingRow !== null || !rows.length || errors > 0;
   for (const id of ['file', 'uid', 'token', 'dedupe', 'within', 'test']) $(id).disabled = busy;
   $('stop').disabled = !busy;
+}
+
+function clearPreviousResult() {
+  $('results').textContent = '';
+  $('status').textContent = '';
+}
+
+function openEditor(row) {
+  if (busy) return;
+  editingRow = row;
+  $('edit-fields').replaceChildren();
+  $('edit-error').textContent = '';
+  $('editor-title').textContent = `${row.line}行目の登録内容を編集`;
+  for (const [field, title] of editableFields) {
+    const label = document.createElement('label');
+    label.htmlFor = `edit-${field}`;
+    label.textContent = title;
+    const input = document.createElement(field === 'notes' ? 'textarea' : 'input');
+    input.id = `edit-${field}`;
+    input.name = field;
+    input.value = row.raw[field] ?? '';
+    if (input.tagName === 'INPUT') input.type = 'text';
+    if (['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'up', 'down'].includes(field)) {
+      input.placeholder = 'true / false または 1 / 0（空欄可）';
+    }
+    $('edit-fields').append(label, input);
+  }
+  render();
+  $('editor').showModal();
+}
+
+$('edit-form').addEventListener('submit', event => {
+  event.preventDefault();
+  if (busy || !editingRow) return;
+  const raw = Object.assign(Object.create(null), editingRow.raw);
+  for (const [field] of editableFields) raw[field] = $(`edit-${field}`).value.trim();
+  try {
+    const task = TaskCsv.toTask(raw);
+    Object.assign(editingRow, { raw, task });
+    delete editingRow.error;
+    clearPreviousResult();
+    closeEditor();
+  } catch (error) {
+    $('edit-error').textContent = error.message;
+  }
+});
+function closeEditor() {
+  editingRow = null;
+  $('editor').close();
+  render();
+}
+$('edit-cancel').onclick = closeEditor;
+$('editor').addEventListener('close', () => {
+  if (!$('editor').open) { editingRow = null; render(); }
+});
+
+function deleteRow(row) {
+  if (busy || !confirm(`${row.line}行目「${row.raw.text || 'タイトルなし'}」を登録対象から削除しますか？`)) return;
+  rows = rows.filter(candidate => candidate !== row);
+  clearPreviousResult();
+  if (!rows.length) $('summary').textContent = '登録対象はありません。';
+  render();
 }
 
 $('file').addEventListener('change', async event => {
