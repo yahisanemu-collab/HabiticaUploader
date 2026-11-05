@@ -1,6 +1,8 @@
 'use strict';
 
 const $ = id => document.getElementById(id);
+$('auth-help-open').onclick = () => $('auth-help-dialog').showModal();
+$('auth-help-close').onclick = () => $('auth-help-dialog').close();
 let rows = [];
 let busy = false;
 let cancel = false;

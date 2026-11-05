@@ -31,6 +31,8 @@ CSVを選択すると登録対象が一覧で表示されます。各行の「�
 
 ## User ID・API Tokenの確認方法
 
+画面の「User ID・API Tokenの調べ方」を押すと、確認手順をポップアップで表示できます。
+
 1. 利用するご本人のアカウントでHabiticaにログインします。
 2. 「設定」→「API」を開きます。[API設定を開く](https://habitica.com/user/settings/api)
 3. 「User ID（ユーザーID）」をコピーして、ツールの「User ID」に貼り付けます。

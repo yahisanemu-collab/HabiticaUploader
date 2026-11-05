@@ -39,18 +39,11 @@
 <section>
 <h2>2. Habitica認証</h2>
 <p>利用するご本人のHabiticaアカウントの情報を入力してください。</p>
-<ol id="auth-help">
-<li>ブラウザでHabiticaにログインします。</li>
-<li>Habiticaの「設定」→「API」を開きます。<a href="https://habitica.com/user/settings/api" target="_blank" rel="noopener noreferrer">API設定を別タブで開く</a></li>
-<li>「User ID（ユーザーID）」をコピーし、下の「User ID」に貼り付けます。</li>
-<li>「API Token（APIトークン）」を確認・コピーし、下の「API Token」に貼り付けます。非表示の場合は表示ボタンを押してください。</li>
-<li>「接続テスト」を押し、接続成功と表示されることを確認します。</li>
-</ol>
-<p><small>入力するのはログイン用のメールアドレスやパスワードではありません。API Tokenはパスワードと同様に扱い、他人に送ったり公開したりしないでください。</small></p>
+<p><button type="button" id="auth-help-open" class="text-link" aria-haspopup="dialog" aria-controls="auth-help-dialog">User ID・API Tokenの調べ方</button></p>
 <label for="uid">User ID</label>
-<input id="uid" aria-describedby="auth-help" type="text" autocomplete="off" spellcheck="false">
+<input id="uid" type="text" autocomplete="off" spellcheck="false">
 <label for="token">API Token</label>
-<input id="token" aria-describedby="auth-help" type="password" autocomplete="off" spellcheck="false">
+<input id="token" type="password" autocomplete="off" spellcheck="false">
 <button id="test">接続テスト</button>
 <span id="connection" role="status">
 </span>
@@ -71,6 +64,18 @@
 <pre id="results">
 </pre>
 </section>
+<dialog id="auth-help-dialog" aria-labelledby="auth-help-title">
+<h2 id="auth-help-title">User ID・API Tokenの調べ方</h2>
+<ol id="auth-help">
+<li>ブラウザでHabiticaにログインします。</li>
+<li>Habiticaの「設定」→「API」を開きます。<a href="https://habitica.com/user/settings/api" target="_blank" rel="noopener noreferrer">API設定を別タブで開く</a></li>
+<li>「User ID（ユーザーID）」をコピーし、入力欄の「User ID」に貼り付けます。</li>
+<li>「API Token（APIトークン）」を確認・コピーし、入力欄の「API Token」に貼り付けます。非表示の場合は表示ボタンを押してください。</li>
+<li>「接続テスト」を押し、接続成功と表示されることを確認します。</li>
+</ol>
+<p><small>入力するのはログイン用のメールアドレスやパスワードではありません。API Tokenはパスワードと同様に扱い、他人に送ったり公開したりしないでください。</small></p>
+<button type="button" id="auth-help-close" autofocus>閉じる</button>
+</dialog>
 <dialog id="editor" aria-labelledby="editor-title">
 <form id="edit-form">
 <h2 id="editor-title">登録内容を編集</h2>

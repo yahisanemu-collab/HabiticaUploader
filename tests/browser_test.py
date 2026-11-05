@@ -46,6 +46,21 @@ with sync_playwright() as playwright:
     page.route('https://habitica.com/**', api)
     page.goto(f'http://127.0.0.1:{server.server_port}/index.html')
 
+    # 案内は初期状態では非表示。リンクの操作・閉じる・Escape・フォーカス復帰。
+    assert not page.locator('#auth-help-dialog').is_visible()
+    page.locator('#auth-help-open').click()
+    assert page.locator('#auth-help-dialog').is_visible()
+    assert page.locator('#auth-help-dialog a').get_attribute('href') == 'https://habitica.com/user/settings/api'
+    assert 'User ID' in page.locator('#auth-help-dialog').inner_text()
+    page.locator('#auth-help-close').click()
+    assert not page.locator('#auth-help-dialog').is_visible()
+    assert page.locator('#auth-help-open').evaluate('(element) => element === document.activeElement')
+    page.locator('#auth-help-open').press('Enter')
+    assert page.locator('#auth-help-dialog').is_visible()
+    page.keyboard.press('Escape')
+    assert not page.locator('#auth-help-dialog').is_visible()
+    assert not requests
+
     def load(source):
         page.locator('#file').set_input_files({'name': 'test.csv', 'mimeType': 'text/csv', 'buffer': source.encode('utf-8')})
         page.wait_for_function("!document.querySelector('#upload').disabled || document.querySelector('#summary').textContent.length > 0")
